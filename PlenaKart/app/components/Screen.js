@@ -1,0 +1,14 @@
+import React from 'react';
+import {SafeAreaView, StyleSheet} from 'react-native';
+
+function Screen({children}) {
+  return <SafeAreaView style={styles.screen}>{children}</SafeAreaView>;
+}
+const styles = StyleSheet.create({
+  screen: {
+    height: '100%',
+    width: '100%',
+  },
+});
+
+export default Screen;
