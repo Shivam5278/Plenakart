@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.primary,
     flex: 1,
+    height: 56,
   },
   text: {
     fontSize: 14,

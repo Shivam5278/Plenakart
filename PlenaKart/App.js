@@ -1,17 +1,22 @@
 import React from 'react';
-import {View, StyleSheet, Text, StatusBar} from 'react-native';
-import HomeScreen from './app/screens/HomeScreen';
-import ProductDetailsScreen from './app/screens/ProductDetailsScreen';
+import {StyleSheet, StatusBar} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+
+import AppNavigator from './app/navigation/AppBottomTabNavigator';
+import OfflineNotice from './app/components/OfflineNotice';
+import {Provider} from 'react-redux';
+import store from './app/redux/store';
 
 function App(props) {
   return (
     <>
-      <StatusBar barStyle={'dark-content'} />
-      <View style={styles.container}>
-        <HomeScreen />
-
-        {/* <ProductDetailsScreen /> */}
-      </View>
+      <OfflineNotice />
+      <Provider store={store}>
+        <StatusBar barStyle={'light-content'} />
+        <NavigationContainer>
+          <AppNavigator />
+        </NavigationContainer>
+      </Provider>
     </>
   );
 }
