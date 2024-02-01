@@ -1,26 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
-  TouchableWithoutFeedback,
   View,
   Image,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import colors from '../config/colors';
 import AppText from './AppText';
 import LineHeart from '../assets/Heart1.svg';
 import SolidHeart from '../assets/Heart2.svg';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  addToCart,
-  productFavourited,
-  selectProductById,
-} from '../redux/ProductSlice';
+import {useDispatch} from 'react-redux';
+import {addToCart, productFavourited} from '../redux/ProductSlice';
 import Icon from './Icon';
 
-function ProductCard({item, price, name, onPress, imageUrl}) {
-  const product = useSelector(state => selectProductById(state, item.id));
-  const [favourite, setFavourite] = useState(product.favourite);
+function ProductCard({item, onPress}) {
+  const [favourite, setFavourite] = useState(item.favourite);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,9 +27,12 @@ function ProductCard({item, price, name, onPress, imageUrl}) {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
+    <Pressable onPress={onPress}>
       <View style={styles.card}>
-        <Image style={styles.image} source={{uri: imageUrl}} />
+        <Image
+          style={styles.image}
+          source={{uri: item.images[item.images.length - 1]}}
+        />
         <TouchableOpacity
           style={styles.favoriteButton}
           onPress={() => setFavourite(!favourite)}>
@@ -42,10 +40,10 @@ function ProductCard({item, price, name, onPress, imageUrl}) {
         </TouchableOpacity>
         <View style={styles.detailsContainer}>
           <AppText style={styles.price} numberOfLines={1}>
-            ${price}
+            ${item.price}
           </AppText>
           <AppText style={styles.name} numberOfLines={1}>
-            {name}
+            {item.title}
           </AppText>
         </View>
         <View style={styles.detailsSection}>
@@ -58,7 +56,7 @@ function ProductCard({item, price, name, onPress, imageUrl}) {
           />
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </Pressable>
   );
 }
 

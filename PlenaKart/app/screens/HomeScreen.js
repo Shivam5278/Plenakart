@@ -11,11 +11,12 @@ import {fetchProducts, selectAllProducts} from '../redux/ProductSlice';
 import {useIsFocused} from '@react-navigation/native';
 
 function HomeScreen({navigation}) {
-  const [error, setError] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  let loading = false;
   const dispatch = useDispatch();
 
+  const [error, setError] = useState(false);
+  let loading = false;
+
+  const products = useSelector(selectAllProducts);
   const productStatus = useSelector(state => state.products.status);
   const hasError = useSelector(state => state.products.error);
 
@@ -33,66 +34,67 @@ function HomeScreen({navigation}) {
     }
   }, [productStatus, dispatch]);
 
-  const products = useSelector(selectAllProducts);
-
   const isFocused = useIsFocused();
+  const renderItem = ({item}) => (
+    // isFocused && (
+    <ProductCard
+      item={item}
+      price={item.price}
+      name={item.title}
+      imageUrl={item.images[0]}
+      onPress={() =>
+        navigation.navigate('ProductDetails', {
+          id: item.id,
+        })
+      }
+    />
+  );
+
   return (
     <Screen style={styles.container}>
-      {isFocused && (
-        <>
-          <View style={styles.bottom}>
-            {products && (
-              <FlatList
-                ListHeaderComponent={
-                  <>
-                    <HomeScreenHeader />
+      <>
+        <View style={styles.bottom}>
+          {products && (
+            <FlatList
+              ListHeaderComponent={
+                <>
+                  <HomeScreenHeader />
 
-                    {error && (
-                      <>
-                        <View style={styles.error}>
-                          <AppText>Couldn't retrieve the products. </AppText>
-                          <AppButton
-                            title={'Retry'}
-                            onPress={dispatch(fetchProducts())}
-                          />
-                        </View>
-                      </>
-                    )}
-                  </>
-                }
-                data={products}
-                keyExtractor={product => product.id.toString()}
-                refreshing={loading}
-                onRefresh={() => {
-                  loading = true;
-                  dispatch(fetchProducts());
-                }}
-                numColumns={2}
-                renderItem={({item}) => (
-                  <ProductCard
-                    item={item}
-                    price={item.price}
-                    name={item.title}
-                    imageUrl={item.images[0]}
-                    onPress={() =>
-                      navigation.navigate('ProductDetails', {
-                        id: item.id,
-                      })
-                    }
-                  />
-                )}
-              />
-            )}
-          </View>
-        </>
-      )}
+                  {error && (
+                    <>
+                      <View style={styles.error}>
+                        <AppText>Couldn't retrieve the products. </AppText>
+                        <AppButton
+                          title={'Retry'}
+                          onPress={() => dispatch(fetchProducts())}
+                        />
+                      </View>
+                    </>
+                  )}
+                </>
+              }
+              data={products}
+              keyExtractor={product => product.id.toString()}
+              refreshing={loading}
+              onRefresh={() => {
+                loading = true;
+                dispatch(fetchProducts());
+              }}
+              numColumns={2}
+              maxToRenderPerBatch={4}
+              windowSize={5}
+              renderItem={renderItem}
+            />
+          )}
+        </View>
+      </>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 35,
+    // marginBottom: 35,
   },
   topBar: {
     backgroundColor: colors.colors.primary,

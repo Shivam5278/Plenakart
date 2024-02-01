@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, ScrollView, Pressable} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import AppText from '../components/AppText';
 import colors from '../config/colors';
 import AppButton from '../components/AppButton';
@@ -16,6 +22,7 @@ import SolidHeart from '../assets/Heart2.svg';
 import StarIcon from '../components/StarRating';
 import Icon from '../components/Icon';
 import ImageSlider from '../components/ImageSlider';
+import CartIcon from '../assets/icons/bag.svg';
 
 function ProductDetailsScreen({route, navigation}) {
   const {id} = route.params;
@@ -41,7 +48,9 @@ function ProductDetailsScreen({route, navigation}) {
         <ScrollView>
           <View style={styles.headerContainer}>
             <Icon name={'chevron-left'} onPress={() => navigation.goBack()} />
-            <Icon name={'cart'} onPress={() => navigation.navigate('Cart')} />
+            <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
+              <CartIcon stroke={colors.black} />
+            </TouchableOpacity>
           </View>
           <View>
             <AppText style={styles.title}>{product.title}</AppText>

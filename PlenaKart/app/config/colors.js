@@ -10,4 +10,5 @@ export default {
   fontGrey: '#616A7D',
   fontDark: '#1E222B',
   fontLight: '#8891A5',
+  iconDark: '#3E4554',
 };

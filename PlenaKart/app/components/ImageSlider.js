@@ -41,7 +41,8 @@ function ImageSlider({images}) {
                     backgroundColor:
                       currentIndex == index ? colors.secondary : '#E4E4E4',
                     marginLeft: 5,
-                  }}></View>
+                  }}
+                />
               );
             })}
           </View>

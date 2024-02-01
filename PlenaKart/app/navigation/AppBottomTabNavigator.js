@@ -8,6 +8,7 @@ import CategoriesScreen from '../screens/CategoriesScreen';
 import FavouritesScreen from '../screens/FavouriteScreen';
 import CartScreen from '../screens/CartScreen';
 import colors from '../config/colors';
+import CustomBottomTab from './CustomBottomTab';
 
 const TabArr = [
   {
@@ -85,9 +86,14 @@ const TabButton = props => {
       onPress={onPress}
       activeOpacity={1}
       style={styles.container}>
-      <Animatable.View ref={viewRef} duration={300} style={styles.container}>
+      <Animatable.View
+        ref={viewRef}
+        duration={300}
+        style={styles.container}
+        useNativeDriver={true}>
         <View style={styles.btn}>
           <Animatable.View
+            useNativeDriver={true}
             ref={circleRef}
             style={styles.circle}
             duration={300}
@@ -112,7 +118,8 @@ export default function AnimTab1() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: styles.tabBar,
-      }}>
+      }}
+      tabBar={CustomBottomTab}>
       {TabArr.map((item, index) => {
         return (
           <Tab.Screen
