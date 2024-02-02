@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import AppText from './AppText';
 import colors from '../config/colors';
@@ -6,18 +6,40 @@ import AppTextInput from './AppTextInput';
 import {useNavigation} from '@react-navigation/native';
 import OfferCard from './OfferCard';
 import CartIcon from '../assets/icons/bag.svg';
+import {getCartQuantity} from '../redux/ProductSlice';
+import {useSelector} from 'react-redux';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSequence,
+  withSpring,
+} from 'react-native-reanimated';
+import CartIndicator from './CartIndicator';
 function HomeScreenHeader(props) {
   const navigation = useNavigation();
   const [search, setSearch] = useState();
+  const count = useSelector(getCartQuantity);
+  const scale = useSharedValue(1);
+  useEffect(() => {
+    scale.value = withSequence(
+      withSpring(1.5, {stiffness: 100}),
+      withDelay(200, withSpring(1, {stiffness: 100})),
+    );
+  }, [count]);
+
+  const animatedIndicatorStyles = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: scale.value}],
+    };
+  });
 
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
         <View style={styles.headerSection}>
           <AppText style={styles.headerName}>Hey, Rahul</AppText>
-          <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
-            <CartIcon />
-          </TouchableOpacity>
+          <CartIndicator iconColor={'white'} />
         </View>
         <AppTextInput icon={'magnify'} placeholder="Search Products" />
 
@@ -61,6 +83,20 @@ const styles = StyleSheet.create({
     color: colors.light,
     fontSize: 22,
     fontWeight: '600',
+  },
+  cartIndicator: {
+    backgroundColor: colors.secondary,
+    width: 22,
+    height: 22,
+    borderRadius: 30,
+    position: 'absolute',
+    borderWidth: 1,
+    borderColor: colors.primary,
+    zIndex: 1,
+    top: -8,
+    right: -10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   searchBox: {

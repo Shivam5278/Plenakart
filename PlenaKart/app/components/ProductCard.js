@@ -13,6 +13,13 @@ import SolidHeart from '../assets/Heart2.svg';
 import {useDispatch} from 'react-redux';
 import {addToCart, productFavourited} from '../redux/ProductSlice';
 import Icon from './Icon';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSequence,
+  withSpring,
+} from 'react-native-reanimated';
 
 function ProductCard({item, onPress}) {
   const [favourite, setFavourite] = useState(item.favourite);
@@ -22,9 +29,20 @@ function ProductCard({item, onPress}) {
     dispatch(productFavourited({id: item.id, favourite}));
   }, [favourite]);
 
+  const scale = useSharedValue(1);
   function AddToCart(id) {
     dispatch(addToCart({id, quantity: 1}));
+    scale.value = withSequence(
+      withSpring(1.3, {stiffness: 200}),
+      withSpring(1, {stiffness: 200}),
+    );
   }
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: scale.value}],
+    };
+  });
 
   return (
     <Pressable onPress={onPress}>
@@ -46,7 +64,7 @@ function ProductCard({item, onPress}) {
             {item.title}
           </AppText>
         </View>
-        <View style={styles.detailsSection}>
+        <Animated.View style={[styles.detailsSection, animatedStyles]}>
           <Icon
             onPress={() => AddToCart(item.id)}
             name={'plus'}
@@ -54,7 +72,7 @@ function ProductCard({item, onPress}) {
             size={24}
             iconColor={colors.white}
           />
-        </View>
+        </Animated.View>
       </View>
     </Pressable>
   );

@@ -15,6 +15,7 @@ import {
   addToCart,
   productFavourited,
   selectProductById,
+  getCartQuantity,
 } from '../redux/ProductSlice';
 
 import LineHeart from '../assets/Heart1.svg';
@@ -22,12 +23,14 @@ import SolidHeart from '../assets/Heart2.svg';
 import StarIcon from '../components/StarRating';
 import Icon from '../components/Icon';
 import ImageSlider from '../components/ImageSlider';
-import CartIcon from '../assets/icons/bag.svg';
+
+import CartIndicator from '../components/CartIndicator';
 
 function ProductDetailsScreen({route, navigation}) {
   const {id} = route.params;
   let loading = true;
   const product = useSelector(state => selectProductById(state, id));
+  const count = useSelector(getCartQuantity);
 
   const [favourite, setFavourite] = useState(product.favourite);
 
@@ -48,9 +51,7 @@ function ProductDetailsScreen({route, navigation}) {
         <ScrollView>
           <View style={styles.headerContainer}>
             <Icon name={'chevron-left'} onPress={() => navigation.goBack()} />
-            <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
-              <CartIcon stroke={colors.black} />
-            </TouchableOpacity>
+            <CartIndicator iconColor={'black'} />
           </View>
           <View>
             <AppText style={styles.title}>{product.title}</AppText>

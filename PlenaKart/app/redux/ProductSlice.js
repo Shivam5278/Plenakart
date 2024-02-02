@@ -92,3 +92,6 @@ export const selectAllProducts = state => state.products.products;
 
 export const selectProductById = (state, productId) =>
   state.products.products.find(product => product.id === productId);
+
+export const getCartQuantity = state =>
+  state.products.cart.items.reduce((total, item) => total + item.quantity, 0);
