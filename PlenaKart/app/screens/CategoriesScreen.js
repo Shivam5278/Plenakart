@@ -32,6 +32,7 @@ function CategoriesScreen({navigation}) {
   const categories = useSelector(state => state.products.categories);
   const renderItem = ({item}) => (
     <TouchableHighlight
+      underlayColor={colors.light}
       onPress={() =>
         navigation.navigate('Search', {type: 'category', search: item})
       }

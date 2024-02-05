@@ -38,7 +38,7 @@ function SearchedProducts({route, navigation}) {
           const response = await productApi.getProductsBySearch(search);
           if (response.ok) {
             dispatch(addProducts(response.data.products));
-            console.log(response.data);
+
             setLoading(false);
             setProducts(response.data.products);
           } else {
@@ -53,7 +53,6 @@ function SearchedProducts({route, navigation}) {
     };
     fetchProducts();
   }, [search, type]);
-  console.log(products.length);
   const renderItem = ({item}) => (
     // isFocused && (
     <ProductCard
@@ -130,15 +129,13 @@ const styles = StyleSheet.create({
 
     marginVertical: 30,
     marginHorizontal: 24,
-    // backgroundColor: 'blue',
   },
   header: {
     fontSize: 30,
     fontWeight: 'bold',
-    paddingLeft: 20,
+    textTransform: 'capitalize',
   },
   search: {
-    // backgroundColor: 'red',
     color: colors.fontDark,
     fontSize: 16,
     paddingLeft: 20,

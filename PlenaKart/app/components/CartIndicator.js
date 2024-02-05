@@ -13,8 +13,10 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import colors from '../config/colors';
+import {useNavigation} from '@react-navigation/native';
 
 function CartIndicator({iconColor}) {
+  const navigation = useNavigation();
   const count = useSelector(getCartQuantity);
   const scale = useSharedValue(1);
   useEffect(() => {

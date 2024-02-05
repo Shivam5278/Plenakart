@@ -43,7 +43,6 @@ const productSlice = createSlice({
         }
 
         state.cart.total += productToAdd.price * quantity;
-        console.log(state.cart);
       }
     },
     removeFromCart: (state, action) => {

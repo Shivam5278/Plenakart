@@ -105,7 +105,6 @@ function CustomBottomTab({state, descriptors, navigation}) {
             : route.name;
         const TabBarIcon = options.tabBarIcon;
         const isFocused = state.index === index;
-        // console.log(isFocused);
 
         const onPress = () => {
           const event = navigation.emit({
