@@ -9,8 +9,10 @@ import HomeScreenHeader from '../components/HomeScreenHeader';
 import {useSelector, useDispatch} from 'react-redux';
 import {fetchProducts, selectAllProducts} from '../redux/ProductSlice';
 import {useIsFocused} from '@react-navigation/native';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 function HomeScreen({navigation}) {
+  const bottomTabHeight = useBottomTabBarHeight();
   const dispatch = useDispatch();
 
   const [error, setError] = useState(false);
@@ -51,7 +53,7 @@ function HomeScreen({navigation}) {
   );
 
   return (
-    <Screen style={styles.container}>
+    <Screen style={[styles.container, {marginBottom: bottomTabHeight}]}>
       <>
         <View style={styles.bottom}>
           {products && (

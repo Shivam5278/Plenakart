@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import AppText from './AppText';
 import colors from '../config/colors';
-import AppTextInput from './AppTextInput';
+import SearchTextInput from './SearchTextInput';
 import {useNavigation} from '@react-navigation/native';
 import OfferCard from './OfferCard';
 import CartIcon from '../assets/icons/bag.svg';
@@ -41,7 +41,7 @@ function HomeScreenHeader(props) {
           <AppText style={styles.headerName}>Hey, Rahul</AppText>
           <CartIndicator iconColor={'white'} />
         </View>
-        <AppTextInput icon={'magnify'} placeholder="Search Products" />
+        <SearchTextInput />
 
         <View style={styles.infoSection}>
           <View style={styles.infoContainer}>

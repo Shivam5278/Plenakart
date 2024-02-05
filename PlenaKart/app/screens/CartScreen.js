@@ -10,8 +10,10 @@ import Screen from '../components/Screen';
 import {useDispatch, useSelector} from 'react-redux';
 import {FlatList} from 'react-native';
 import {addToCart, removeFromCart} from '../redux/ProductSlice';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 function CartScreen({navigation}) {
+  const bottomTabHeight = useBottomTabBarHeight();
   const dispatch = useDispatch();
   const cart = useSelector(state => state.products.cart);
   let deliveryCharge = 2;
@@ -33,33 +35,39 @@ function CartScreen({navigation}) {
   }
 
   return (
-    <Screen style={styles.container}>
+    <Screen style={[styles.container, {paddingBottom: bottomTabHeight - 38}]}>
       <View style={styles.headerContainer}>
         <Icon name={'chevron-left'} onPress={() => navigation.goBack()} />
         <AppText style={styles.header}>Shopping Cart ({totalItems})</AppText>
       </View>
       <View style={styles.cartItems}>
-        <FlatList
-          data={cart.items}
-          ItemSeparatorComponent={<ListItemSeparator />}
-          renderItem={({item}) => {
-            return (
-              <ListItem
-                title={item.title}
-                subTitle={`$ ${item.price}`}
-                imageUrl={item.images[0]}
-                quantity={item.quantity}
-                onPress={() =>
-                  navigation.navigate('ProductDetails', {
-                    id: item.id,
-                  })
-                }
-                onPressPlus={() => AddToCart(item.id)}
-                onPressMinus={() => RemoveFromCart(item.id, 1)}
-              />
-            );
-          }}
-        />
+        {!cart.items.length == 0 ? (
+          <FlatList
+            data={cart.items}
+            ItemSeparatorComponent={<ListItemSeparator />}
+            renderItem={({item}) => {
+              return (
+                <ListItem
+                  title={item.title}
+                  subTitle={`$ ${item.price}`}
+                  imageUrl={item.images[0]}
+                  quantity={item.quantity}
+                  onPress={() =>
+                    navigation.navigate('ProductDetails', {
+                      id: item.id,
+                    })
+                  }
+                  onPressPlus={() => AddToCart(item.id)}
+                  onPressMinus={() => RemoveFromCart(item.id, 1)}
+                />
+              );
+            }}
+          />
+        ) : (
+          <View style={styles.emptyView}>
+            <AppText>No items in cart</AppText>
+          </View>
+        )}
       </View>
       <View style={styles.cartDetailsSection}>
         <View style={styles.cartDetails}>
@@ -105,7 +113,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
   },
-
+  emptyView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
   cartDetailsSection: {
     backgroundColor: colors.light,
     marginHorizontal: 8,
@@ -114,6 +127,7 @@ const styles = StyleSheet.create({
     height: 228,
     width: '96%',
     paddingVertical: 9,
+    // bottom: -38,
   },
   cartDetails: {
     flexDirection: 'row',

@@ -1,51 +1,77 @@
-import React from 'react';
-import {View, StyleSheet, Button} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  TouchableHighlight,
+} from 'react-native';
 import AppText from '../components/AppText';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withSequence,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
-function CategoriesScreen(props) {
-  const offset = useSharedValue(0);
 
-  const style = useAnimatedStyle(() => ({
-    transform: [{translateX: offset.value}],
-  }));
-  const OFFSET = 60;
-  const TIME = 500;
-  const handlePress = () => {
-    offset.value = withSequence(
-      withTiming(-OFFSET, {duration: TIME / 2}),
-      withRepeat(withTiming(OFFSET, {duration: TIME}), 6, true),
-      withTiming(0, {duration: TIME / 2}),
-    );
+import {fetchProductCategories} from '../redux/ProductSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import colors from '../config/colors';
+import ListItemSeparator from '../components/ListItemSeparator';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import Screen from '../components/Screen';
+
+function CategoriesScreen({navigation}) {
+  const bottomTabHeight = useBottomTabBarHeight();
+
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    getProductCategories();
+  }, []);
+
+  const getProductCategories = () => {
+    dispatch(fetchProductCategories());
+    setLoading(false);
   };
+
+  const categories = useSelector(state => state.products.categories);
+  const renderItem = ({item}) => (
+    <TouchableHighlight
+      onPress={() =>
+        navigation.navigate('Search', {type: 'category', search: item})
+      }
+      style={styles.item}>
+      <AppText style={styles.title} numberOfLines={1}>
+        {item}
+      </AppText>
+    </TouchableHighlight>
+  );
   return (
-    <View style={styles.container}>
+    <Screen style={[styles.container, {marginBottom: bottomTabHeight}]}>
       <View style={styles.headerContainer}>
         <AppText style={styles.header}>Categories</AppText>
       </View>
-      <Animated.View
-        style={[
-          {
-            width: 100,
-            height: 100,
-            backgroundColor: 'violet',
-          },
-          style,
-        ]}
-      />
-      <Button onPress={handlePress} title="Shake" />
-    </View>
+      {loading ? (
+        <>
+          <View
+            style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+            <ActivityIndicator size={'large'} color={colors.secondary} />
+          </View>
+        </>
+      ) : (
+        <View style={{flex: 1}}>
+          <FlatList
+            data={categories}
+            renderItem={renderItem}
+            keyExtractor={item => item}
+            ItemSeparatorComponent={<ListItemSeparator />}
+          />
+        </View>
+      )}
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -56,6 +82,17 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 30,
     fontWeight: 'bold',
+  },
+  item: {
+    alignItems: 'flex-start',
+    paddingLeft: 20,
+    paddingVertical: 10,
+    backgroundColor: colors.white,
+  },
+  title: {
+    fontSize: 20,
+    // fontFamily: 'Manrope-Semibold',
+    textTransform: 'capitalize',
   },
 });
 

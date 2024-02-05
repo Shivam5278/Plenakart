@@ -10,15 +10,17 @@ import ProductCard from '../components/ProductCard';
 
 import SolidHeart from '../assets/Heart2.svg';
 import {selectAllProducts} from '../redux/ProductSlice';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 function FavouritesScreen({navigation}) {
+  const bottomTabHeight = useBottomTabBarHeight();
   const products = useSelector(selectAllProducts);
   const favouriteProducts = products.filter(
     product => product.favourite === true,
   );
   const isFocused = useIsFocused();
   return (
-    <Screen style={styles.screen}>
+    <Screen style={[styles.screen, {marginBottom: bottomTabHeight}]}>
       {isFocused && (
         <>
           <View style={styles.headerContainer}>

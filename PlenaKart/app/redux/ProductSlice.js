@@ -15,6 +15,19 @@ const productSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
+    addProducts: (state, action) => {
+      const newProducts = action.payload;
+
+      newProducts.forEach(newProduct => {
+        const existingProduct = state.products.find(
+          product => product.id === newProduct.id,
+        );
+
+        if (!existingProduct) {
+          state.products.push(newProduct);
+        }
+      });
+    },
     addToCart: (state, action) => {
       const {id, quantity} = action.payload;
 
@@ -67,15 +80,32 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.products = action.payload;
+        const uniqueProducts = action.payload.filter(newProduct => {
+          return !state.products.some(
+            existingProduct => existingProduct.id === newProduct.id,
+          );
+        });
+
+        state.products = [...state.products, ...uniqueProducts];
       })
       .addCase(fetchProducts.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(fetchProductCategories.pending, (state, action) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchProductCategories.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.categories = action.payload;
+      })
+      .addCase(fetchProductCategories.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });
   },
 });
-export const {addToCart, removeFromCart, productFavourited} =
+export const {addToCart, addProducts, removeFromCart, productFavourited} =
   productSlice.actions;
 
 export default productSlice.reducer;
@@ -88,7 +118,16 @@ export const fetchProducts = createAsyncThunk(
   },
 );
 
+export const fetchProductCategories = createAsyncThunk(
+  'products/fetchProductCategories',
+  async () => {
+    const response = await productsApi.getCategories();
+    return response.data;
+  },
+);
+
 export const selectAllProducts = state => state.products.products;
+export const selectSearchedProducts = state => state.products.searchList;
 
 export const selectProductById = (state, productId) =>
   state.products.products.find(product => product.id === productId);

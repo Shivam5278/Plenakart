@@ -14,6 +14,7 @@ const AppNavigator = () => (
     tabBar={props => <CustomBottomTab {...props} />}
     screenOptions={{
       headerShown: false,
+      tabBarHideOnKeyboard: true,
       tabBarStyle: {
         height: 70,
       },

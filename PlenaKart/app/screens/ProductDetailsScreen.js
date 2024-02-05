@@ -1,11 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  TouchableOpacity,
-} from 'react-native';
+import {View, StyleSheet, ScrollView, Pressable} from 'react-native';
 import AppText from '../components/AppText';
 import colors from '../config/colors';
 import AppButton from '../components/AppButton';
@@ -15,7 +9,6 @@ import {
   addToCart,
   productFavourited,
   selectProductById,
-  getCartQuantity,
 } from '../redux/ProductSlice';
 
 import LineHeart from '../assets/Heart1.svg';
@@ -30,7 +23,6 @@ function ProductDetailsScreen({route, navigation}) {
   const {id} = route.params;
   let loading = true;
   const product = useSelector(state => selectProductById(state, id));
-  const count = useSelector(getCartQuantity);
 
   const [favourite, setFavourite] = useState(product.favourite);
 

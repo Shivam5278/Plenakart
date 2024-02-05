@@ -1,4 +1,4 @@
-import {View, StyleSheet, Pressable} from 'react-native';
+import {View, StyleSheet, Pressable, Keyboard} from 'react-native';
 import colors from '../config/colors';
 import Animated, {
   interpolateColor,
@@ -15,6 +15,28 @@ import {useWindowDimensions} from 'react-native';
 function CustomBottomTab({state, descriptors, navigation}) {
   const {width} = useWindowDimensions();
   const [selectedTab, setselectedTab] = useState(0);
+  const [tabBarVisible, setTabBarVisible] = useState(true);
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setTabBarVisible(false);
+      },
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setTabBarVisible(true);
+      },
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const animatedCircleStyles = useAnimatedStyle(() => ({
